@@ -3,8 +3,8 @@ import { Button } from "../ui/button";
 
 export default function CTASection() {
   return (
-    <section className="container mx-auto px-6 py-20">
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-12 text-center">
+    <section className="container mx-auto px-4 py-16">
+      <div className="bg-gradient-to-r from-card to-card-foreground rounded-3xl p-12 text-center">
         <h2 className="text-4xl md:text-5xl font-bold mb-4">
           Ready to Transform Your Content?
         </h2>
