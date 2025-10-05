@@ -1,12 +1,26 @@
 "use client"
 import { useState, useRef } from 'react';
-import { Upload, Video, X, Settings, Type, Palette } from 'lucide-react';
+import { Upload, Video, X, Settings, Type, Palette, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import axios from 'axios';
+import { toast } from 'sonner';
+
+interface VideoUploadResult {
+  filename: string;
+  message: string;
+  result: {
+    data: any[];
+    original_name: string;
+    status: string;
+  };
+}
 
 export default function ReelForgeApp() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [uploadResult, setUploadResult] = useState<VideoUploadResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (file: File) => {
@@ -14,6 +28,47 @@ export default function ReelForgeApp() {
       setUploadedFile(file);
       const url = URL.createObjectURL(file);
       setVideoPreviewUrl(url);
+      // Reset previous results
+      setUploadResult(null);
+      // Auto-upload after selection
+      uploadVideoToBackend(file);
+    }
+  };
+
+  const uploadVideoToBackend = async (file: File) => {
+    setIsProcessing(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/video/uploadVideo`,
+        formData,
+        {
+          headers: {
+            'accept': 'application/json',
+          },
+          withCredentials: true
+        }
+      );
+
+      console.log('Upload successful:', response.data);
+      setUploadResult(response.data);
+      toast.success('Video processed successfully!');
+
+    } catch (err: any) {
+      console.error('Upload error:', err);
+
+      if (err.response) {
+        const errorMessage = err.response.data.detail || err.response.data.message;
+        toast.error(errorMessage || 'Video upload failed. Please try again.');
+      } else if (err.request) {
+        toast.error('Unable to connect to server. Please try again later.');
+      } else {
+        toast.error('An unexpected error occurred. Please try again.');
+      }
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -51,6 +106,7 @@ export default function ReelForgeApp() {
       URL.revokeObjectURL(videoPreviewUrl);
     }
     setVideoPreviewUrl(null);
+    setUploadResult(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -125,6 +181,7 @@ export default function ReelForgeApp() {
                   size="icon"
                   onClick={handleRemoveVideo}
                   className="h-7 w-7"
+                  disabled={isProcessing}
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -144,11 +201,15 @@ export default function ReelForgeApp() {
         </div>
       </div>
 
-      {/* Right Side - Subtitle Editor */}
+      {/* Right Side - Results/Editor */}
       <div className={`w-1/2 p-6 flex flex-col overflow-hidden ${!uploadedFile ? 'blur-sm pointer-events-none' : ''}`}>
         <div className="mb-4 flex-shrink-0">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Edit Subtitles</h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">Customize your video subtitles and styling</p>
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            {isProcessing ? 'Processing Video' : 'Transcript Results'}
+          </h2>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            {isProcessing ? 'Extracting audio and generating transcript...' : 'Video transcript and timing data'}
+          </p>
         </div>
 
         {!uploadedFile ? (
@@ -195,12 +256,31 @@ export default function ReelForgeApp() {
               </div>
             </div>
           </div>
-        ) : (
+        ) : isProcessing ? (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <Loader2 className="h-12 w-12 text-zinc-900 dark:text-zinc-100 animate-spin mx-auto mb-4" />
+              <p className="font-medium text-zinc-900 dark:text-zinc-100 mb-2">Processing your video...</p>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">Extracting audio and generating transcript</p>
+            </div>
+          </div>
+        ) : uploadResult ? (
           <div className="flex-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6 overflow-auto min-h-0">
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              Subtitle editing functionality will be here...
-            </p>
-            {/* TODO: Add subtitle editing components */}
+            <div className="mb-4">
+              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-1">Status: {uploadResult.result.status}</p>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400">{uploadResult.message}</p>
+            </div>
+            
+            <div className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4">
+              <p className="text-xs font-medium text-zinc-900 dark:text-zinc-100 mb-2">Transcript Data:</p>
+              <pre className="text-xs text-zinc-600 dark:text-zinc-400 overflow-auto">
+                {JSON.stringify(uploadResult.result.data, null, 2)}
+              </pre>
+            </div>
+          </div>
+        ) : (
+          <div className="flex-1 flex items-center justify-center">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">Waiting for processing results...</p>
           </div>
         )}
       </div>
