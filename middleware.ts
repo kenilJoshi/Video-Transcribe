@@ -21,7 +21,7 @@ export function middleware(request: NextRequest) {
 
   // If logged in and trying to access login/register, redirect to dashboard
   if (token && (pathname === "/login" || pathname === "/signup")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/app", request.url));
   }
 
   return NextResponse.next();

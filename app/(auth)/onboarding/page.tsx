@@ -73,7 +73,7 @@ export default function OnboardingPage() {
   const handleFinish = () => {
     console.log('Onboarding completed:', formData);
     // Redirect to dashboard
-    router.push('/dashboard');
+    router.push('/app');
   };
 
   const isStepValid = () => {
@@ -259,7 +259,7 @@ export default function OnboardingPage() {
         {/* Skip Option */}
         <div className="text-center mt-6">
           <button 
-            onClick={() => router.push('/dashboard')}
+            onClick={() => router.push('/app')}
             className="text-slate-400 hover:text-white transition-colors text-sm"
           >
             Skip for now
