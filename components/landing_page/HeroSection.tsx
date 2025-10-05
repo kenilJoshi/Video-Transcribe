@@ -14,7 +14,7 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="container mx-auto px-6 pt-20 pb-32">
+    <div className="max-w-5xl mx-auto px-4 pt-20 pb-32">
       <div className="text-center max-w-5xl mx-auto">
         <div className="inline-flex items-center gap-2 bg-purple-500/20 border border-purple-500/50 rounded-full px-4 py-2 mb-8">
           <Sparkles className="w-4 h-4 text-purple-400" />
@@ -24,7 +24,7 @@ export default function HeroSection() {
         <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
           Turn Raw Videos Into
           <br />
-          Viral Short-Form Content
+          <span className='text-primary'>Viral Short-Form Content</span>
         </h1>
         
         <p className="text-xl text-slate-300 mb-10 max-w-3xl mx-auto">
