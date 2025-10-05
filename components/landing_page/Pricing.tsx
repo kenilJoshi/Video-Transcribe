@@ -25,7 +25,7 @@ const pricingPlans = [
 
 export default function Pricing() {
   return (
-    <section className="container mx-auto px-6 py-20">
+    <section className="max-w-5xl mx-auto px-4 py-16">
       <div className="text-center mb-16">
         <h2 className="text-4xl md:text-5xl font-bold mb-4">Simple, Transparent Pricing</h2>
         <p className="text-xl text-slate-400">Choose the plan that fits your content goals</p>
