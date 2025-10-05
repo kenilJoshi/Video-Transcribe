@@ -1,26 +1,25 @@
 // lib/axios.ts
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import axios from "axios";
+import Cookies from "js-cookie";
 
 // Create axios instance
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: {},
   withCredentials: true, // Important: allows cookies to be sent
 });
 
 // Request interceptor to add token from cookie
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = Cookies.get('access_token');
-    
+    const token = Cookies.get("access_token");
+    console.log(token);
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      config.headers.set('x-access-token', `Bearer ${token}`)
+      config.headers.set("x-access-token", `Bearer ${token}`);
     }
-    
+
     return config;
   },
   (error) => {
@@ -34,14 +33,17 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
-      Cookies.remove('access_token');
-      
+      Cookies.remove("access_token");
+
       // Redirect to login if not already there
-      if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
-        window.location.href = '/login';
+      if (
+        typeof window !== "undefined" &&
+        !window.location.pathname.includes("/login")
+      ) {
+        window.location.href = "/login";
       }
     }
-    
+
     return Promise.reject(error);
   }
 );

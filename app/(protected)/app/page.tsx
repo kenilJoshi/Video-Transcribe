@@ -47,6 +47,7 @@ export default function ReelForgeApp() {
         {
           headers: {
             'accept': 'application/json',
+            'Content-Type': 'multipart/form-data'
           },
           withCredentials: true
         }
@@ -75,7 +76,7 @@ export default function ReelForgeApp() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const file = e.dataTransfer.files[0];
     handleFileSelect(file);
   };
@@ -130,8 +131,8 @@ export default function ReelForgeApp() {
               className={`
                 flex-1 border-2 border-dashed rounded-lg p-8 text-center
                 transition-colors cursor-pointer flex items-center justify-center
-                ${isDragging 
-                  ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-100 dark:bg-zinc-800' 
+                ${isDragging
+                  ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-100 dark:bg-zinc-800'
                   : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600'
                 }
               `}
@@ -144,7 +145,7 @@ export default function ReelForgeApp() {
                 onChange={handleFileInput}
                 className="hidden"
               />
-              
+
               <div className="flex flex-col items-center gap-3">
                 <div className="h-12 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
                   <Upload className="h-6 w-6 text-zinc-600 dark:text-zinc-400" />
@@ -224,7 +225,7 @@ export default function ReelForgeApp() {
               <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
                 Once uploaded, you'll be able to edit subtitles and customize styling
               </p>
-              
+
               <div className="space-y-3 text-left">
                 <div className="flex items-start gap-3">
                   <div className="h-8 w-8 rounded bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center flex-shrink-0">
@@ -270,7 +271,7 @@ export default function ReelForgeApp() {
               <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-1">Status: {uploadResult.result.status}</p>
               <p className="text-xs text-zinc-600 dark:text-zinc-400">{uploadResult.message}</p>
             </div>
-            
+
             <div className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4">
               <p className="text-xs font-medium text-zinc-900 dark:text-zinc-100 mb-2">Transcript Data:</p>
               <pre className="text-xs text-zinc-600 dark:text-zinc-400 overflow-auto">
