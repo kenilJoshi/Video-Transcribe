@@ -4,16 +4,16 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
-import { config } from '@/lib/config';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [_, setError] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,7 +23,7 @@ export default function LoginPage() {
 
     try {
       const response = await axios.post(
-        `${config.apiUrl}/auth/auth/login`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
         {
           email: email,
           password: password
@@ -33,34 +33,23 @@ export default function LoginPage() {
             'accept': 'application/json',
             'Content-Type': 'application/json'
           },
-          withCredentials: true // Important for cookies
+          withCredentials: true
         }
       );
-
-      // Login successful
       console.log('Login successful:', response.data);
-
-      // Store token if needed (if not using cookies)
       if (response.data.access_token) {
-        // Option 1: Store in memory or state management
-        // Option 2: Let the backend handle it via cookies (recommended)
 
         if (rememberMe) {
-          // You can store user preference
           localStorage.setItem('rememberMe', 'true');
         }
       }
-
-      // Redirect to dashboard or home
       router.push('/onboarding');
 
     } catch (err: any) {
       console.error('Login error:', err);
 
       if (err.response) {
-        // Server responded with error
         const errorMessage = err.response.data.detail || err.response.data.message;
-
         if (err.response.status === 401) {
           setError('Invalid email or password');
         } else if (err.response.status === 404) {
@@ -69,10 +58,8 @@ export default function LoginPage() {
           setError(errorMessage || 'Login failed. Please try again.');
         }
       } else if (err.request) {
-        // Request made but no response
         setError('Unable to connect to server. Please try again later.');
       } else {
-        // Other errors
         setError('An unexpected error occurred. Please try again.');
       }
     } finally {
@@ -137,7 +124,8 @@ export default function LoginPage() {
             {/* Forgot Password */}
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center">
-                <input type="checkbox" className="mr-2 rounded border-white/10 bg-slate-900/50" />
+                {/* @ts-ignore */}
+                <input value={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} type="checkbox" className="mr-2 rounded border-white/10 bg-slate-900/50" />
                 <span className="text-slate-400">Remember me</span>
               </label>
               <Link href="/forgot-password" className="text-purple-400 hover:text-purple-300">
