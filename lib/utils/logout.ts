@@ -1,6 +1,8 @@
 // lib/logout.ts
 import axios from 'axios';
 import { toast } from 'sonner';
+import Cookies from 'js-cookie';
+
 
 export const logout = async (router: any) => {
   try {
@@ -15,9 +17,8 @@ export const logout = async (router: any) => {
         withCredentials: true
       }
     );
-
+    Cookies.remove('access_token')
     console.log('Logout successful:', response.data);
-    
     // Clear any stored data
     localStorage.removeItem('rememberMe');
     

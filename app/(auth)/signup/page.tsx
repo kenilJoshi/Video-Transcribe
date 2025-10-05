@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { config } from '@/lib/config';
-import axios from 'axios';
+import axiosInstance from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -39,7 +39,7 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${config.apiUrl}/auth/register`,
         {
           email: formData.email,

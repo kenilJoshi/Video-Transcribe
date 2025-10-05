@@ -2,7 +2,7 @@
 import { useState, useRef } from 'react';
 import { Upload, Video, X, Settings, Type, Palette, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import axios from 'axios';
+import axiosInstance from '@/lib/axios';
 import { toast } from 'sonner';
 
 interface VideoUploadResult {
@@ -41,7 +41,7 @@ export default function ReelForgeApp() {
     formData.append('file', file);
 
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${process.env.NEXT_PUBLIC_API_URL}/video/uploadVideo`,
         formData,
         {

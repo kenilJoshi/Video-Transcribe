@@ -3,13 +3,14 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
+import axiosInstance from '@/lib/axios';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
+import Cookies from 'js-cookie';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
         {
           email: email,
@@ -41,13 +42,23 @@ export default function LoginPage() {
       console.log('Login successful:', response.data);
       
       if (response.data.access_token) {
+        // Save access token in cookie
+        const cookieOptions = {
+          expires: rememberMe ? 7 : undefined, // 7 days if remember me, session cookie otherwise
+          path: '/', // Available across entire app
+          secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+          sameSite: 'lax' as const, // CSRF protection
+        };
+        
+        Cookies.set('access_token', response.data.access_token, cookieOptions);
+        
         if (rememberMe) {
           localStorage.setItem('rememberMe', 'true');
         }
       }
       
       toast.success('Login successful!');
-      router.push('/onboarding');
+      router.push('/app');
 
     } catch (err: any) {
       console.error('Login error:', err);
