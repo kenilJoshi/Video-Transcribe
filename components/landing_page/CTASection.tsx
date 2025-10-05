@@ -1,4 +1,5 @@
 // components/CTASection.tsx (Server Component)
+import { Button } from "../ui/button";
 
 export default function CTASection() {
   return (
@@ -10,9 +11,7 @@ export default function CTASection() {
         <p className="text-xl mb-8 text-purple-100">
           Join thousands of creators making viral-worthy videos
         </p>
-        <button className="px-8 py-4 bg-white text-purple-600 rounded-lg font-semibold hover:bg-slate-100 transition-all">
-          Start Creating Free
-        </button>
+        <Button>Start Creating Free</Button>
       </div>
     </section>
   );

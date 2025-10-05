@@ -27,13 +27,13 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="container mx-auto px-6 py-20">
+    <section className="container mx-auto px-4 py-20">
       <div className="text-center mb-16">
         <h2 className="text-4xl md:text-5xl font-bold mb-4">Everything You Need to Go Viral</h2>
         <p className="text-xl text-slate-400">Professional video editing, simplified</p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid md:grid-cols-2 gap-4">
         {features.map((feature, index) => {
           const Icon = feature.icon;
           return (
