@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
 
     const data = await response.json();
     return NextResponse.json(data);
-  } catch (error) {
-    return NextResponse.json({ user: null }, { status: 401 });
+  } catch {
+    return NextResponse.json({ user: null }, { status: 401, statusText: 'Unauthorized'});
   }
 }
