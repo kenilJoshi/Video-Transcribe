@@ -1,9 +1,17 @@
-export default function DashboardLayout({
+import { AuthProvider } from '@/lib/auth-context';
+
+export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-        <main>{children}</main>
-  )
+    <html lang="en">
+      <body>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+      </body>
+    </html>
+  );
 }
