@@ -7,9 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useRouter } from 'next/navigation';
 import { toast } from "sonner"
 
 export default function SignupPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -51,8 +53,12 @@ export default function SignupPage() {
             accept: 'application/json',
             'Content-Type': 'application/json',
           },
+          withCredentials: true
         }
       );
+      console.log('Registration successful:', response.data);
+      // TODO: based on the onbording status either redirect him to onbording or app
+      router.push('/onboarding');
       toast('Success: Registration successful!');
     } catch (error: any) {
       console.error('Error during registration:', error);
