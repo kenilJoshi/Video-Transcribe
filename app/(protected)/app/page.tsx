@@ -1,9 +1,10 @@
 "use client"
 import { useState, useRef } from 'react';
-import { Upload, Video, X, Settings, Type, Palette, Loader2 } from 'lucide-react';
+import { Upload, Video, X, Loader2, Edit3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import axiosInstance from '@/lib/axios';
 import { toast } from 'sonner';
+import ReelForgeEditor from '@/components/app/ReelForgeEditor';
 
 interface VideoUploadResult {
   filename: string;
@@ -21,6 +22,7 @@ export default function ReelForgeApp() {
   const [isDragging, setIsDragging] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [uploadResult, setUploadResult] = useState<VideoUploadResult | null>(null);
+  const [showEditor, setShowEditor] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (file: File) => {
@@ -28,9 +30,8 @@ export default function ReelForgeApp() {
       setUploadedFile(file);
       const url = URL.createObjectURL(file);
       setVideoPreviewUrl(url);
-      // Reset previous results
       setUploadResult(null);
-      // Auto-upload after selection
+      setShowEditor(false);
       uploadVideoToBackend(file);
     }
   };
@@ -76,7 +77,6 @@ export default function ReelForgeApp() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-
     const file = e.dataTransfer.files[0];
     handleFileSelect(file);
   };
@@ -108,10 +108,51 @@ export default function ReelForgeApp() {
     }
     setVideoPreviewUrl(null);
     setUploadResult(null);
+    setShowEditor(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
+
+  const openEditor = () => {
+    if (uploadResult) {
+      setShowEditor(true);
+    }
+  };
+
+  // If editor is open, show only the editor
+  if (showEditor && uploadResult && videoPreviewUrl) {
+    return (
+      <div className="min-h-full flex flex-col fixed inset-0">
+        <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowEditor(false)}
+            >
+              ← Back
+            </Button>
+            <div>
+              <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                {uploadedFile?.name}
+              </h2>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                Editing transcript and styles
+              </p>
+            </div>
+          </div>
+          <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+            Export Video
+          </Button>
+        </div>
+        <ReelForgeEditor 
+          transcriptData={uploadResult.result.data}
+          videoUrl={videoPreviewUrl}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="h-[calc(100vh-73px)] bg-zinc-50 dark:bg-zinc-950 flex overflow-hidden">
@@ -202,62 +243,18 @@ export default function ReelForgeApp() {
         </div>
       </div>
 
-      {/* Right Side - Results/Editor */}
+      {/* Right Side - Results */}
       <div className={`w-1/2 p-6 flex flex-col overflow-hidden ${!uploadedFile ? 'blur-sm pointer-events-none' : ''}`}>
         <div className="mb-4 flex-shrink-0">
           <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             {isProcessing ? 'Processing Video' : 'Transcript Results'}
           </h2>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            {isProcessing ? 'Extracting audio and generating transcript...' : 'Video transcript and timing data'}
+            {isProcessing ? 'Extracting audio and generating transcript...' : 'Video transcript ready for editing'}
           </p>
         </div>
 
-        {!uploadedFile ? (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center max-w-md">
-              <div className="h-16 w-16 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-4">
-                <Video className="h-8 w-8 text-zinc-400" />
-              </div>
-              <p className="text-base font-medium text-zinc-900 dark:text-zinc-100 mb-2">
-                Upload a video to get started
-              </p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
-                Once uploaded, you'll be able to edit subtitles and customize styling
-              </p>
-
-              <div className="space-y-3 text-left">
-                <div className="flex items-start gap-3">
-                  <div className="h-8 w-8 rounded bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center flex-shrink-0">
-                    <Type className="h-4 w-4 text-zinc-600 dark:text-zinc-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Text Controls</p>
-                    <p className="text-xs text-zinc-600 dark:text-zinc-400">Edit subtitle text, timing, and placement</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="h-8 w-8 rounded bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center flex-shrink-0">
-                    <Palette className="h-4 w-4 text-zinc-600 dark:text-zinc-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Style Options</p>
-                    <p className="text-xs text-zinc-600 dark:text-zinc-400">Customize fonts, colors, and effects</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="h-8 w-8 rounded bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center flex-shrink-0">
-                    <Settings className="h-4 w-4 text-zinc-600 dark:text-zinc-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Advanced Settings</p>
-                    <p className="text-xs text-zinc-600 dark:text-zinc-400">Fine-tune animations and transitions</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : isProcessing ? (
+        {isProcessing ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
               <Loader2 className="h-12 w-12 text-zinc-900 dark:text-zinc-100 animate-spin mx-auto mb-4" />
@@ -266,22 +263,47 @@ export default function ReelForgeApp() {
             </div>
           </div>
         ) : uploadResult ? (
-          <div className="flex-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6 overflow-auto min-h-0">
-            <div className="mb-4">
-              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-1">Status: {uploadResult.result.status}</p>
-              <p className="text-xs text-zinc-600 dark:text-zinc-400">{uploadResult.message}</p>
+          <div className="flex-1 flex flex-col">
+            <div className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4 mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                    Status: {uploadResult.result.status}
+                  </p>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400">{uploadResult.message}</p>
+                </div>
+                <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs font-medium px-3 py-1 rounded-full">
+                  Ready
+                </div>
+              </div>
             </div>
 
-            <div className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4">
-              <p className="text-xs font-medium text-zinc-900 dark:text-zinc-100 mb-2">Transcript Data:</p>
-              <pre className="text-xs text-zinc-600 dark:text-zinc-400 overflow-auto">
-                {JSON.stringify(uploadResult.result.data, null, 2)}
-              </pre>
+            <div className="flex-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6 overflow-auto">
+              <div className="mb-4">
+                <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+                  Transcript Preview
+                </h3>
+                <div className="space-y-2">
+                  {uploadResult.result.data.map((item: any, index: number) => (
+                    <div key={index} className="text-sm text-zinc-700 dark:text-zinc-300 p-2 bg-zinc-50 dark:bg-zinc-800 rounded">
+                      {item.alternatives[0].transcript}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <Button 
+                onClick={openEditor} 
+                className="w-full bg-blue-600 hover:bg-blue-700 mt-4"
+              >
+                <Edit3 className="h-4 w-4 mr-2" />
+                Open Editor
+              </Button>
             </div>
           </div>
         ) : (
           <div className="flex-1 flex items-center justify-center">
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Waiting for processing results...</p>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">Upload a video to get started</p>
           </div>
         )}
       </div>
