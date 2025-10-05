@@ -1,17 +1,14 @@
 import { AuthProvider } from '@/lib/auth-context';
-
+import Navbar from '@/components/Navbar';
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
-      </body>
-    </html>
+    <AuthProvider>
+      <Navbar />
+      {children}
+    </AuthProvider>
   );
 }
