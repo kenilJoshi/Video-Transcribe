@@ -4,6 +4,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { config } from '@/lib/config';
+import axios from 'axios';
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -17,28 +19,50 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-    
+
     if (!agreedToTerms) {
       alert('Please agree to the terms and conditions');
       return;
     }
 
     setIsLoading(true);
-    
-    // Handle signup logic here
-    console.log('Signup:', formData);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      // Redirect to onboarding after successful signup
-      // window.location.href = '/onboarding';
-    }, 1000);
+
+    try {
+      const response = await axios.post(
+        `${config.apiUrl}/auth/auth/register`,
+        {
+          email: formData.email,
+          password: formData.password,
+          username: formData.name,
+        },
+        {
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      alert('Registration successful!');
+    } catch (error: any) {
+      console.error('Error during registration:', error);
+
+      if (error.response) {
+        alert(`Error: ${error.response.data?.detail || 'Registration failed.'}`);
+      } else if (error.request) {
+        alert('Network error: Could not reach the server.');
+      } else {
+        alert('An unexpected error occurred.');
+      }
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
