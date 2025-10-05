@@ -18,6 +18,7 @@ axiosInstance.interceptors.request.use(
     
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      config.headers.set('x-access-token', `Bearer ${token}`)
     }
     
     return config;
