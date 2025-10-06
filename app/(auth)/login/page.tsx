@@ -38,9 +38,9 @@ export default function LoginPage() {
           withCredentials: true
         }
       );
-      
+
       console.log('Login successful:', response.data);
-      
+
       if (response.data.access_token) {
         // Save access token in cookie
         const cookieOptions = {
@@ -49,14 +49,14 @@ export default function LoginPage() {
           secure: process.env.NODE_ENV === 'production', // HTTPS only in production
           sameSite: 'lax' as const, // CSRF protection
         };
-        
+
         Cookies.set('access_token', response.data.access_token, cookieOptions);
-        
+
         if (rememberMe) {
           localStorage.setItem('rememberMe', 'true');
         }
       }
-      
+
       toast.success('Login successful!');
       router.push('/app');
 
@@ -138,8 +138,8 @@ export default function LoginPage() {
                   Remember me
                 </label>
               </div>
-              <Link 
-                href="/forgot-password" 
+              <Link
+                href="/forgot-password"
                 className="text-zinc-900 dark:text-zinc-100 hover:underline"
               >
                 Forgot password?
@@ -195,7 +195,7 @@ export default function LoginPage() {
 
           {/* Sign Up Link */}
           <p className="text-center text-xs text-zinc-600 dark:text-zinc-400 mt-5">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/signup" className="text-zinc-900 dark:text-zinc-100 font-medium hover:underline">
               Sign up
             </Link>

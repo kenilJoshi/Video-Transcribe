@@ -99,7 +99,7 @@ export default function OnboardingPage() {
             <span className="text-sm text-zinc-600 dark:text-zinc-400">{Math.round((currentStep / 3) * 100)}% Complete</span>
           </div>
           <div className="h-2 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
-            <div 
+            <div
               className="h-full bg-zinc-900 dark:bg-zinc-100 transition-all duration-300"
               style={{ width: `${(currentStep / 3) * 100}%` }}
             />
@@ -125,17 +125,15 @@ export default function OnboardingPage() {
                     <button
                       key={role.id}
                       onClick={() => handleRoleSelect(role.id)}
-                      className={`p-6 rounded-lg border-2 transition-all text-left ${
-                        formData.role === role.id
+                      className={`p-6 rounded-lg border-2 transition-all text-left ${formData.role === role.id
                           ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-50 dark:bg-zinc-800'
                           : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600'
-                      }`}
+                        }`}
                     >
-                      <Icon className={`w-8 h-8 mb-3 ${
-                        formData.role === role.id 
-                          ? 'text-zinc-900 dark:text-zinc-100' 
+                      <Icon className={`w-8 h-8 mb-3 ${formData.role === role.id
+                          ? 'text-zinc-900 dark:text-zinc-100'
                           : 'text-zinc-600 dark:text-zinc-400'
-                      }`} />
+                        }`} />
                       <h3 className="font-semibold text-lg text-zinc-900 dark:text-zinc-100">
                         {role.label}
                       </h3>
@@ -161,11 +159,10 @@ export default function OnboardingPage() {
                   <button
                     key={type}
                     onClick={() => handleContentTypeToggle(type)}
-                    className={`p-4 rounded-lg border-2 transition-all text-left flex items-center justify-between ${
-                      formData.contentType.includes(type)
+                    className={`p-4 rounded-lg border-2 transition-all text-left flex items-center justify-between ${formData.contentType.includes(type)
                         ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-50 dark:bg-zinc-800'
                         : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600'
-                    }`}
+                      }`}
                   >
                     <span className="font-medium text-zinc-900 dark:text-zinc-100">{type}</span>
                     {formData.contentType.includes(type) && (
@@ -190,18 +187,17 @@ export default function OnboardingPage() {
               {/* Goals */}
               <div>
                 <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-4">
-                  What's your primary goal?
+                  What&apos;s your primary goal?
                 </h3>
                 <div className="space-y-3">
                   {goals.map((goal) => (
                     <button
                       key={goal}
                       onClick={() => setFormData({ ...formData, goal })}
-                      className={`w-full p-4 rounded-lg border-2 transition-all text-left flex items-center justify-between ${
-                        formData.goal === goal
+                      className={`w-full p-4 rounded-lg border-2 transition-all text-left flex items-center justify-between ${formData.goal === goal
                           ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-50 dark:bg-zinc-800'
                           : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600'
-                      }`}
+                        }`}
                     >
                       <span className="text-zinc-900 dark:text-zinc-100">{goal}</span>
                       {formData.goal === goal && (
@@ -222,11 +218,10 @@ export default function OnboardingPage() {
                     <button
                       key={exp}
                       onClick={() => setFormData({ ...formData, experience: exp })}
-                      className={`w-full p-4 rounded-lg border-2 transition-all text-left flex items-center justify-between ${
-                        formData.experience === exp
+                      className={`w-full p-4 rounded-lg border-2 transition-all text-left flex items-center justify-between ${formData.experience === exp
                           ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-50 dark:bg-zinc-800'
                           : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600'
-                      }`}
+                        }`}
                     >
                       <span className="text-zinc-900 dark:text-zinc-100">{exp}</span>
                       {formData.experience === exp && (
@@ -275,7 +270,7 @@ export default function OnboardingPage() {
 
         {/* Skip Option */}
         <div className="text-center mt-6">
-          <button 
+          <button
             onClick={() => router.push('/app')}
             className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors text-sm"
           >
