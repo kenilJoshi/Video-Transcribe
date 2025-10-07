@@ -43,7 +43,7 @@ export default function ReelForgeApp() {
 
     try {
       const response = await axiosInstance.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/video/uploadVideo`,
+        `/video/uploadVideo`,
         formData,
         {
           headers: {
