@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { config } from '@/lib/config';
 import axiosInstance from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,7 +39,7 @@ export default function SignupPage() {
 
     try {
       const response = await axiosInstance.post(
-        `${config.apiUrl}/auth/register`,
+        `/auth/register`,
         {
           email: formData.email,
           password: formData.password,
